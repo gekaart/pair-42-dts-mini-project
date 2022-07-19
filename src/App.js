@@ -6,11 +6,12 @@ import "@fontsource/roboto/700.css";
 import { ThemeProvider } from "@mui/material";
 import theme from "./themes/theme";
 import Home from "./pages/Home";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Login from "./pages/Login";
 import React, { useState, useEffect } from "react";
 import app from "./config/firebase";
+import Navigate from "./config/Navigate";
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -18,14 +19,14 @@ import {
   signOut,
   onAuthStateChanged,
 } from "firebase/auth";
+const auth = getAuth(app);
 
 const App = () => {
-  const auth = getAuth(app);
   const [user, setUser] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  // const [emailError, setEmailError] = useState("");
+  // const [passwordError, setPasswordError] = useState("");
   const [hasAccount, setHasAccount] = useState(false);
 
   const clearInputs = () => {
@@ -33,41 +34,41 @@ const App = () => {
     setPassword("");
   };
 
-  const clearError = () => {
-    setEmailError("");
-    setPasswordError("");
-  };
-
-  const navigate = useNavigate();
+  // const clearError = () => {
+  //   setEmailError("");
+  //   setPasswordError("");
+  // };
 
   const handleLogin = () => {
-    clearError();
+    // clearError();
     signInWithEmailAndPassword(auth, email, password).catch((err) => {
-      switch (err.code) {
-        case "auth/invalid-email":
-        case "auth/user-disabled":
-        case "auth/user-not-found":
-          setEmailError(err.message);
-          break;
-        case "auth/wrong-password":
-          setPasswordError(err.message);
-          break;
-      }
+      // switch (err.code) {
+      //   case "auth/invalid-email":
+      //   case "auth/user-disabled":
+      //   case "auth/user-not-found":
+      //     setEmailError(err.message);
+      //     break;
+      //   case "auth/wrong-password":
+      //     setPasswordError(err.message);
+      //     break;
+      // }
+      console.log(err);
     });
   };
 
   const handleSignup = () => {
-    clearError();
+    // clearError();
     createUserWithEmailAndPassword(auth, email, password).catch((err) => {
-      switch (err.code) {
-        case "auth/email-already-in-use":
-        case "auth/invalid-email":
-          setEmailError(err.message);
-          break;
-        case "auth/weak-password":
-          setPasswordError(err.message);
-          break;
-      }
+      // switch (err.code) {
+      //   case "auth/email-already-in-use":
+      //   case "auth/invalid-email":
+      //     setEmailError(err.message);
+      //     break;
+      //   case "auth/weak-password":
+      //     setPasswordError(err.message);
+      //     break;
+      // }
+      console.log(err);
     });
   };
 
@@ -76,20 +77,20 @@ const App = () => {
   };
 
   useEffect(() => {
+    const authListener = () => {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          clearInputs();
+          setUser(user);
+          <Navigate />;
+        } else {
+          setUser("");
+        }
+      });
+    };
     authListener();
   }, []);
 
-  const authListener = () => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        clearInputs();
-        setUser(user);
-        navigate("/");
-      } else {
-        setUser("");
-      }
-    });
-  };
   console.log(user);
 
   return (
@@ -109,8 +110,8 @@ const App = () => {
                 handleSignup={handleSignup}
                 hasAccount={hasAccount}
                 setHasAccount={setHasAccount}
-                emailError={emailError}
-                passwordError={passwordError}
+                // emailError={emailError}
+                // passwordError={passwordError}
               />
               // </ProtectedRoute>
             }

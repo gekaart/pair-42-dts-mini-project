@@ -11,8 +11,8 @@ const Login = (props) => {
     handleSignup,
     hasAccount,
     setHasAccount,
-    emailError,
-    passwordError,
+    // emailError,
+    // passwordError,
   } = props;
 
   return (
@@ -34,7 +34,7 @@ const Login = (props) => {
             placeholder="johndoe@email.com"
             label="Email"
           />
-          <p className="errorMsg">{emailError}</p>
+          {/* <p className="errorMsg">{emailError}</p> */}
         </div>
         <div className="field">
           <TextField
@@ -47,7 +47,7 @@ const Login = (props) => {
             placeholder="password"
             label="Password"
           />
-          <p className="errorMsg">{passwordError}</p>
+          {/* <p className="errorMsg">{passwordError}</p> */}
         </div>
         {hasAccount ? (
           <>
