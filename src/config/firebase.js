@@ -1,8 +1,8 @@
 import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
-  apiKey: REACT_APP_FIREBASE_KEY,
-  // apiKey: "AIzaSyAjDd7FTA5t1hum0PSRb4G3DVCb4e8cwf8",
+  // apiKey: REACT_APP_FIREBASE_KEY,
+  apiKey: "AIzaSyAjDd7FTA5t1hum0PSRb4G3DVCb4e8cwf8",
   authDomain: "dts-mini-project-933f4.firebaseapp.com",
   projectId: "dts-mini-project-933f4",
   storageBucket: "dts-mini-project-933f4.appspot.com",
