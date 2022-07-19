@@ -28,7 +28,7 @@ const Banner = () => {
       return request;
     }
     fetchData();
-  }, [requests.fetchNetflixOriginals]);
+  }, []);
   const listRef = useRef();
   const handleClick = (direction) => {
     let distance = listRef.current.getBoundingClientRect().x - 50;

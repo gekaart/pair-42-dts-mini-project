@@ -6,10 +6,9 @@ import "@fontsource/roboto/700.css";
 import { ThemeProvider } from "@mui/material";
 import theme from "./themes/theme";
 import Home from "./pages/Home";
-import { Routes, Route, NavLink, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
 import React, { useState, useEffect } from "react";
 import app from "./config/firebase";
 import {
@@ -19,7 +18,6 @@ import {
   signOut,
   onAuthStateChanged,
 } from "firebase/auth";
-import ProtectedRoute from "./components/ProtectedRoute";
 
 const App = () => {
   const auth = getAuth(app);
