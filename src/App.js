@@ -6,68 +6,79 @@ import "@fontsource/roboto/700.css";
 import { ThemeProvider } from "@mui/material";
 import theme from "./themes/theme";
 import Home from "./pages/Home";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Login from "./pages/Login";
 import React, { useState, useEffect } from "react";
 import app from "./config/firebase";
-import Navigate from "./config/Navigate";
 import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged,
 } from "firebase/auth";
-const auth = getAuth(app);
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const App = () => {
-  const [user, setUser] = useState("");
+  const auth = getAuth(app);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const [emailError, setEmailError] = useState("");
-  // const [passwordError, setPasswordError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [hasAccount, setHasAccount] = useState(false);
+  const navigate = useNavigate();
 
   const clearInputs = () => {
     setEmail("");
     setPassword("");
   };
 
-  // const clearError = () => {
-  //   setEmailError("");
-  //   setPasswordError("");
-  // };
+  const clearError = () => {
+    setEmailError("");
+    setPasswordError("");
+  };
 
   const handleLogin = () => {
-    // clearError();
+    clearError();
     signInWithEmailAndPassword(auth, email, password).catch((err) => {
-      // switch (err.code) {
-      //   case "auth/invalid-email":
-      //   case "auth/user-disabled":
-      //   case "auth/user-not-found":
-      //     setEmailError(err.message);
-      //     break;
-      //   case "auth/wrong-password":
-      //     setPasswordError(err.message);
-      //     break;
-      // }
+      switch (err.code) {
+        default:
+          setEmailError("");
+          break;
+        case "auth/invalid-email":
+          setEmailError("Your email is Invalid");
+          break;
+        case "auth/user-disabled":
+          setEmailError("user was disabled");
+          break;
+        case "auth/user-not-found":
+          setEmailError("user not found");
+          break;
+        case "auth/wrong-password":
+          setPasswordError("wrong password");
+          break;
+      }
       console.log(err);
     });
   };
 
   const handleSignup = () => {
-    // clearError();
+    clearError();
     createUserWithEmailAndPassword(auth, email, password).catch((err) => {
-      // switch (err.code) {
-      //   case "auth/email-already-in-use":
-      //   case "auth/invalid-email":
-      //     setEmailError(err.message);
-      //     break;
-      //   case "auth/weak-password":
-      //     setPasswordError(err.message);
-      //     break;
-      // }
+      switch (err.code) {
+        default:
+          setEmailError("");
+          break;
+        case "auth/email-already-in-use":
+          setEmailError("your email already used");
+          break;
+        case "auth/invalid-email":
+          setEmailError("invalid email");
+          break;
+        case "auth/weak-password":
+          setPasswordError("your password is weak");
+          break;
+      }
       console.log(err);
     });
   };
@@ -76,20 +87,19 @@ const App = () => {
     signOut(auth);
   };
 
+  const [user, loading, error] = useAuthState(auth);
   useEffect(() => {
-    const authListener = () => {
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          clearInputs();
-          setUser(user);
-          <Navigate />;
-        } else {
-          setUser("");
-        }
-      });
-    };
-    authListener();
-  }, []);
+    if (loading) {
+      return;
+    }
+    if (user) {
+      navigate("/");
+      clearInputs();
+    }
+    if (error) {
+      console.log(error);
+    }
+  }, [loading, user, navigate, error]);
 
   console.log(user);
 
@@ -100,7 +110,6 @@ const App = () => {
           <Route
             path="/login"
             element={
-              // <ProtectedRoute loginOnly="true">
               <Login
                 email={email}
                 setEmail={setEmail}
@@ -110,10 +119,9 @@ const App = () => {
                 handleSignup={handleSignup}
                 hasAccount={hasAccount}
                 setHasAccount={setHasAccount}
-                // emailError={emailError}
-                // passwordError={passwordError}
+                emailError={emailError}
+                passwordError={passwordError}
               />
-              // </ProtectedRoute>
             }
           />
 
